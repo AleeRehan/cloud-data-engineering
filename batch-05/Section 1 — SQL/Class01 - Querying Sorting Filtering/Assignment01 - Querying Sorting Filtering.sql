@@ -4,6 +4,7 @@
 --  Topics   : SELECT, WHERE, ORDER BY, TOP/OFFSET-FETCH,
 --             DISTINCT, AND / OR
 -- ============================================================
+use BikeStores
 
 
 -- ============================================================
@@ -14,7 +15,13 @@
 -- ============================================================
 
 -- Write your query below:
-
+SELECT 
+	first_name
+	,last_name
+	,city
+	,phone
+FROM sales.customers
+WHERE state = 'CA'and phone is not null
 
 
 
@@ -28,7 +35,13 @@
 
 -- Write your query below:
 
-
+SELECT 
+	product_id
+	,product_name
+	,model_year
+	,list_price
+FROM production.products
+ORDER BY model_year DESC, list_price 
 
 
 -- ============================================================
@@ -42,10 +55,20 @@
 
 -- Part a:
 
+SELECT TOP 5
+	product_name
+	,list_price
+FROM production.products
+ORDER BY list_price DESC
 
 -- Part b:
 
+SELECT TOP 5 PERCENT
+	*
+FROM production.products
+ORDER BY list_price ASC
 
+-- 5% returned 17 rows out of 321
 
 
 -- ============================================================
@@ -60,12 +83,24 @@
 
 -- Page 1:
 
+SELECT *
+FROM Production.products
+ORDER BY list_price DESC
+OFFSET 0 ROWS FETCH NEXT 10 ROWS ONLY
 
 -- Page 2:
 
+SELECT *
+FROM Production.products
+ORDER BY list_price DESC
+OFFSET 10 ROWS FETCH NEXT 10 ROWS ONLY
 
 -- Page 3:
 
+SELECT *
+FROM Production.products
+ORDER BY list_price DESC
+OFFSET 20 ROWS FETCH NEXT 10 ROWS ONLY
 
 
 
@@ -82,12 +117,26 @@
 
 -- Part a:
 
+SELECT DISTINCT state
+FROM sales.customers
+ORDER by state 
+
 
 -- Part b:
 
+SELECT DISTINCT
+	state,
+	city
+FROM sales.customers
+ORDER by state,city
 
 -- Part c:
 
+SELECT DISTINCT model_year AS ModelYear, 'Model Year'  AS label 
+FROM production.products
+UNION
+SELECT COUNT(DISTINCT model_year), 'Years Count' AS label
+FROM production.products
 
 
 
@@ -103,3 +152,28 @@
 -- ============================================================
 
 -- Write your query below:
+
+SELECT 
+	product_id
+	,product_name
+	,brand_id
+	,category_id
+	,list_price
+FROM production.products
+WHERE list_price >= 500 AND list_price <= 1500 AND (model_year = 2019 OR model_year = 2020)
+ORDER BY list_price ASC
+
+--no result for the year 2019 or 2020 
+--as the data exists for the model year till 2018 for the list_price between 500 - 1500 inclusive  
+--as it can be seen from the query below: 
+
+SELECT 
+	product_id
+	,product_name
+	,brand_id
+	,category_id
+	,list_price
+	,model_year
+FROM production.products
+WHERE list_price >= 500 AND list_price <= 1500 AND (model_year = 2018 OR model_year = 2019 OR model_year = 2020)
+ORDER BY list_price ASC
