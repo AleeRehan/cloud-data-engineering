@@ -3,7 +3,7 @@
 --  Database : BikeStores
 -- ============================================================
 
-
+use BikeStores
 -- ============================================================
 --  Question 1
 --  Retrieve the product_name, list_price, and category_name
@@ -13,7 +13,11 @@
 -- ============================================================
 
 -- Write your query below:
-
+select p.product_name, p.list_price, c.category_name
+from production.products p
+join production.categories c
+on p.category_id = c.category_id
+order by p.product_name
 
 
 
@@ -27,6 +31,12 @@
 
 -- Write your query below:
 
+select c.first_name + ' ' + c.last_name full_name, o.order_id, o.order_date 
+from 
+sales.orders o
+join sales.customers c
+on o.customer_id = c.customer_id
+order by o.order_date desc
 
 
 
@@ -41,7 +51,13 @@
 
 -- Write your query below:
 
-
+select p.product_name, p.list_price, c.category_name, b.brand_name
+from production.products p
+join production.categories c
+on p.brand_id = c.category_id
+join production.brands b 
+on p.brand_id = b.brand_id
+order by b.brand_name, p.product_name
 
 
 -- ============================================================
@@ -56,7 +72,11 @@
 
 -- Write your query below:
 
-
+select p.product_name, oi.order_id, oi.item_id
+from production.products p
+left join sales.order_items oi
+on p.product_id = oi.product_id
+order by oi.order_id
 
 
 -- ============================================================
@@ -68,6 +88,12 @@
 -- ============================================================
 
 -- Write your query below:
+
+select p.product_id,p.product_name
+from production.products p
+left join sales.order_items oi
+on p.product_id = oi.product_id
+where oi.order_id is null
 
 
 
@@ -84,6 +110,10 @@
 
 -- Write your query below:
 
+select s.store_name, s.store_id, o.order_id, o.order_date from 
+sales.stores s
+left join sales.orders o
+on o.store_id = s.store_id
 
 
 
@@ -99,7 +129,11 @@
 
 -- Write your query below:
 
-
+select 
+	s.first_name+' '+s.last_name as staff_name,
+	m.first_name+' '+m.last_name as manager_name from sales.staffs s
+join sales.staffs m
+on s.manager_id = m.staff_id
 
 
 -- ============================================================
@@ -114,8 +148,11 @@
 
 -- Write your query below:
 
+select s.store_name, b.brand_name
+FROM sales.stores s
+CROSS JOIN production.brands b
 
-
+-- there would be 27 rows as a result because 3 stores × 9 brands = 27 rows 
 
 -- ============================================================
 --  Question 9
@@ -128,3 +165,20 @@
 -- ============================================================
 
 -- Write your query below:
+
+select 
+    c.first_name + ' ' + c.last_name AS full_name,
+    o.order_id,
+    o.order_date,
+    p.product_name,
+    p.list_price
+from sales.orders o
+join sales.order_items oi
+    on o.order_id = oi.order_id
+join sales.customers c
+on c.customer_id = o.customer_id
+join production.products p
+    on oi.product_id = p.product_id
+order by 
+    o.order_date,
+    full_name
